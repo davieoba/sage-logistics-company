@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  db:
+    # image: postgres
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      # research how to do it that when docker is creating this file I have the permission to edit it
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=sage-logistics
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8100:8100
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - PORT=8100
+      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/sage-logistics
+      - DB_HOST=localhost
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=sage-logistics
+    depends_on:
+      - db
+
+volumes:
+  data:
