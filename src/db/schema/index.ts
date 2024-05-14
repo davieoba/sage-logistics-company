@@ -33,15 +33,15 @@ export type User = InferSelectModel<typeof users>
 export type NewUser = InferInsertModel<typeof users>
 
 export const statusEnum = pgEnum("status", [
-  "pending",
   "processing",
+  "in-transit",
   "delivered",
 ])
 export const logistics = pgTable("logistics", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 256 }).notNull(),
   userId: uuid("user_id").notNull(),
-  status: statusEnum("status").default("pending"),
+  status: statusEnum("status").default("processing"),
   trackingId: varchar("trackingId").notNull(),
   pickUpDate: varchar("pickUpDate", { length: 256 }).notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),

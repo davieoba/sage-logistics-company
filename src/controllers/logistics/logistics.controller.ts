@@ -3,6 +3,7 @@ import catchAsync from "../../extensions/libs/catch-async"
 import {
   getLogisticsStatusSchema,
   logisticsSchema,
+  updateLogisticsSchema,
 } from "../../extensions/schemas/logistics.schema"
 import AppError from "../../extensions/libs/app-error"
 import { db } from "../../db"
@@ -96,12 +97,9 @@ class LogisticsController {
 
   static getPackageStatus = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { error, value } = getLogisticsStatusSchema.validate(req.body)
-      if (error) {
-        return next(new AppError("Tracking number is required", 400))
-      }
+      const { id } = req.params
 
-      const packageTrackingNumber = generateTrackingNumberHash(value.trackingId)
+      const packageTrackingNumber = generateTrackingNumberHash(id)
       const logisticsPackage: Logistics[] = await db
         .select()
         .from(logistics)
@@ -119,25 +117,48 @@ class LogisticsController {
 
   static trackPackage = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { trackingId } = req.body
-      if (!trackingId) {
+      const { error, value } = getLogisticsStatusSchema.validate(req.body)
+
+      if (error) {
         return next(new AppError("Tracking number is required", 400))
       }
 
-      const status = await checkLogisticsStatus(trackingId)
+      const status = await checkLogisticsStatus(value.trackingId)
+
       if (!status) {
         return next(new AppError("Error getting status", 400))
       }
+
+      res.status(200).json({
+        message: "ok",
+        status,
+      })
     }
   )
 
   static updatePackage = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      // this will be an restricted route that only the people with the right priviledge can update the status of the package
-      // the admin and the staff person can change the status of the package the location of the package etc
-      // remember to update the timestamp (write a function to create a timestamp that can be updated) I can just call the function and it will give me the current timestamp which I can use to update the updated_at attribute of the package
       const { id } = req.params
-      // get the package from the id
+      const { error, value } = updateLogisticsSchema.validate(req.body)
+      if (error) {
+        return next(new AppError(error.details[0].message, 400))
+      }
+
+      const packageTrackingNumber = generateTrackingNumberHash(id)
+      const logisticsPackage = await db
+        .update(logistics)
+        .set({
+          status: value.status,
+          isPackageReadyForPickup: value.isPackageReadyForPickup,
+          updatedAt: new Date(),
+        })
+        .where(eq(logistics.trackingId, packageTrackingNumber))
+        .returning()
+
+      return res.status(200).json({
+        message: "ok",
+        logisticsPackage,
+      })
     }
   )
 }

@@ -10,3 +10,8 @@ export const logisticsSchema = joi.object({
 export const getLogisticsStatusSchema = joi.object({
   trackingId: joi.string().required(),
 })
+
+export const updateLogisticsSchema = joi.object({
+  status: joi.string().required(),
+  isPackageReadyForPickup: joi.boolean().required(),
+})

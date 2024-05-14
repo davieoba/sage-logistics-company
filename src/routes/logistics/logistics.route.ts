@@ -6,15 +6,15 @@ import { restrictTo } from "../../middleware"
 const router = Router()
 
 router.post("/", AuthController.authenticate, LogisticsController.createPackage)
-router.get("/:id", AuthController.authenticate, LogisticsController.getPackage)
 router.get(
   "/track",
   AuthController.authenticate,
   LogisticsController.trackPackage
 )
+router.get("/:id", AuthController.authenticate, LogisticsController.getPackage)
 router.get(
   "/status/:id",
-  AuthController.authenticate,
+  // AuthController.authenticate,
   LogisticsController.getPackageStatus
 )
 router.patch(

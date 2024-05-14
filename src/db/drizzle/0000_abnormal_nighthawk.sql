@@ -5,7 +5,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "status" AS ENUM('pending', 'processing', 'delivered');
+ CREATE TYPE "status" AS ENUM('processing', 'in-transit', 'delivered');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "logistics" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(256) NOT NULL,
 	"user_id" uuid NOT NULL,
-	"status" "status" DEFAULT 'pending',
+	"status" "status" DEFAULT 'processing',
 	"trackingId" varchar NOT NULL,
 	"pickUpDate" varchar(256) NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,

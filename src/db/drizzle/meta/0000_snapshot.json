@@ -1,5 +1,5 @@
 {
-  "id": "c3c562bd-90f3-4cf7-a7ea-48ab37936171",
+  "id": "63ae42e7-5fc9-4cb0-a1df-6cf5f6611048",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -32,7 +32,7 @@
           "type": "status",
           "primaryKey": false,
           "notNull": false,
-          "default": "'pending'"
+          "default": "'processing'"
         },
         "trackingId": {
           "name": "trackingId",
@@ -168,8 +168,8 @@
     "status": {
       "name": "status",
       "values": {
-        "pending": "pending",
         "processing": "processing",
+        "in-transit": "in-transit",
         "delivered": "delivered"
       }
     }

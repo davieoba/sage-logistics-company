@@ -11,14 +11,12 @@ const checkLogisticsStatus = async (trackingId: string) => {
       `${BASE_URL}/api/v1/logistics/status/${trackingId}`
     )
     const packageTrackingNumber = generateTrackingNumberHash(trackingId)
-
     await db
       .update(logistics)
       .set({ status: response.data.logistics.status, updatedAt: new Date() })
       .where(eq(logistics.trackingId, packageTrackingNumber))
 
-    console.log("response from the check logistics status", response)
-    return response.data
+    return response.data.logistics.status
   } catch (error) {
     return null
   }
