@@ -6,3 +6,7 @@ export const logisticsSchema = joi.object({
   pickUpLocation: joi.string().required(),
   dropOffLocation: joi.string().required(),
 })
+
+export const getLogisticsStatusSchema = joi.object({
+  trackingId: joi.string().required(),
+})

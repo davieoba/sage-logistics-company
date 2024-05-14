@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import catchAsync from "../../extensions/libs/catch-async"
-import { logisticsSchema } from "../../extensions/schemas/logistics.schema"
+import {
+  getLogisticsStatusSchema,
+  logisticsSchema,
+} from "../../extensions/schemas/logistics.schema"
 import AppError from "../../extensions/libs/app-error"
 import { db } from "../../db"
 import { Logistics, NewLogistics, logistics } from "../../db/schema"
@@ -8,6 +11,7 @@ import generateTrackingNumber, {
   generateTrackingNumberHash,
 } from "../../extensions/libs/generate-tracking-number"
 import { eq } from "drizzle-orm"
+import checkLogisticsStatus from "../../extensions/handlers/check-logistics-status"
 
 class LogisticsController {
   static createPackage = catchAsync(
@@ -47,7 +51,7 @@ class LogisticsController {
     }
   )
 
-  static trackPackage = catchAsync(
+  static getPackage = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const { id } = req.params
       if (!id) {
@@ -87,6 +91,43 @@ class LogisticsController {
           isPackageReadyForPickup: logisticsPackage[0].isPackageReadyForPickup,
         },
       })
+    }
+  )
+
+  static getPackageStatus = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { error, value } = getLogisticsStatusSchema.validate(req.body)
+      if (error) {
+        return next(new AppError("Tracking number is required", 400))
+      }
+
+      const packageTrackingNumber = generateTrackingNumberHash(value.trackingId)
+      const logisticsPackage: Logistics[] = await db
+        .select()
+        .from(logistics)
+        .where(eq(logistics.trackingId, packageTrackingNumber))
+
+      res.status(200).json({
+        message: "ok",
+        logistics: {
+          status: logisticsPackage[0].status,
+          isPackageReadyForPickup: logisticsPackage[0].isPackageReadyForPickup,
+        },
+      })
+    }
+  )
+
+  static trackPackage = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { trackingId } = req.body
+      if (!trackingId) {
+        return next(new AppError("Tracking number is required", 400))
+      }
+
+      const status = await checkLogisticsStatus(trackingId)
+      if (!status) {
+        return next(new AppError("Error getting status", 400))
+      }
     }
   )
 
