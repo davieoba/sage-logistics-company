@@ -6,7 +6,7 @@ import { logger } from "../extensions/helpers/logger.helper"
 import { logistics, users } from "./schema"
 import generateDate from "../extensions/libs/generate-date"
 import generateTrackingNumber from "../extensions/libs/generate-tracking-number"
-import generateToken from "@/extensions/libs/generate-token"
+import generateToken from "../extensions/libs/generate-token"
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,

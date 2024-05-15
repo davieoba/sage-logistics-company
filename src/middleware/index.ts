@@ -1,3 +1,4 @@
+import rateLimit from "express-rate-limit"
 import AppError from "../extensions/libs/app-error"
 import { NextFunction, Request, Response } from "express"
 
@@ -12,3 +13,22 @@ export const restrictTo = (...roles: string[]) => {
     next()
   }
 }
+
+export const authLimiter = rateLimit({
+  windowMs: 2 * 60 * 1000,
+  limit: 7,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+})
+
+export const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: (res: Response) => {
+    return res.status(429).json({
+      message: "Too many requests",
+    })
+  },
+})

@@ -99,7 +99,7 @@ class LogisticsController {
         return next(new AppError("Error", 401))
       }
 
-      if (req.user?.id !== logisticsPackage[0].userId) {
+      if (req.user?.id !== logisticsPackage[0]?.userId) {
         if (!["admin", "staff"].includes(req.user.role)) {
           return res.status(403).json({
             message: "You do not have permission to view this resource",

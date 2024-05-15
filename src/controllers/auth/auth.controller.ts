@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
-import bcrypt from "bcryptjs"
 import { NewUser, users } from "../../db/schema"
 import { db } from "../../db"
-import { ACCESS_TOKEN, ACCESS_TOKEN_EXPIRY } from "../../config/app.keys"
+import { ACCESS_TOKEN } from "../../config/app.keys"
 import { registerSchema } from "../../extensions/schemas/auth.schema"
 import AppError from "../../extensions/libs/app-error"
 import catchAsync from "../../extensions/libs/catch-async"
@@ -19,14 +18,7 @@ class AuthController {
         return next(new AppError(error.message, 400))
       }
 
-      // const salt = await bcrypt.genSalt(10)
-      // const apiKey = await bcrypt.hash(value.email, salt)
-
-      // const token = jwt.sign({ apiKey: apiKey }, String(ACCESS_TOKEN), {
-      //   expiresIn: ACCESS_TOKEN_EXPIRY,
-      // })
       const { token, apiKey } = await generateToken(value.email)
-
       if (!token) {
         return next(new AppError("Error creating token, please try again", 400))
       }
