@@ -45,6 +45,6 @@ app.use(errorController)
 
 const server = http.createServer(app)
 const SERVER_PORT = process.env.NODE_ENV === "test" ? TEST_PORT : PORT
-server.listen(SERVER_PORT, () => {
+server.listen(SERVER_PORT || 5000, () => {
   logger.info(`Server running on http://localhost:${SERVER_PORT}${API_PREFIX}`)
 })
