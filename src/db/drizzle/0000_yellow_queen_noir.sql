@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "logistics" (
 	"name" varchar(256) NOT NULL,
 	"user_id" uuid NOT NULL,
 	"status" "status" DEFAULT 'processing',
-	"trackingId" varchar NOT NULL,
+	"trackingId" varchar,
 	"pickUpDate" varchar(256) NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS "logistics" (
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"role" "role" DEFAULT 'user' NOT NULL,
-	"full_name" varchar(256) NOT NULL,
+	"first_name" varchar(256) NOT NULL,
+	"last_name" varchar(256) NOT NULL,
 	"email" varchar(256) NOT NULL,
 	"token" varchar,
 	"apiKey" varchar,

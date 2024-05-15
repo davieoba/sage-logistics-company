@@ -1,5 +1,5 @@
 {
-  "id": "63ae42e7-5fc9-4cb0-a1df-6cf5f6611048",
+  "id": "1c91ba60-3017-4419-8246-1b57104466d6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -38,7 +38,7 @@
           "name": "trackingId",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "pickUpDate": {
           "name": "pickUpDate",
@@ -103,8 +103,14 @@
           "notNull": true,
           "default": "'user'"
         },
-        "full_name": {
-          "name": "full_name",
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true

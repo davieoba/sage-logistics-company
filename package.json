@@ -11,6 +11,7 @@
     "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
     "migrate": "tsx -r dotenv/config src/db/migrate.ts",
     "generate:migration": "drizzle-kit generate:pg --config=drizzle.config.ts && tsx -r dotenv/config src/db/migrate.ts",
+    "db:seed": "ts-node ./src/db/seed.ts",
     "test:watch": "cross-env NODE_ENV=test node --test --watch --require ts-node/register tests/setup.test.ts",
     "test": "cross-env NODE_ENV=test node --test --require ts-node/register tests/setup.test.ts"
   },
@@ -30,6 +31,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/dotenv": "^8.2.0",
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",

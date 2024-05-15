@@ -31,7 +31,8 @@ class AuthController {
       const newUser: NewUser[] = await db
         .insert(users)
         .values({
-          fullName: value.fullName,
+          firstName: value.firstName,
+          lastName: value.lastName,
           email: value.email,
           token: token,
           apiKey: apiKey,
