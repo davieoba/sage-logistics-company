@@ -8,21 +8,24 @@ import { registerSchema } from "../../extensions/schemas/auth.schema"
 import AppError from "../../extensions/libs/app-error"
 import catchAsync from "../../extensions/libs/catch-async"
 import { logger } from "../../extensions/helpers/logger.helper"
+import generateToken from "../../extensions/libs/generate-token"
 
 class AuthController {
   static register = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const { error, value } = registerSchema.validate(req.body)
+
       if (error) {
-        return new AppError(error.message, 400)
+        return next(new AppError(error.message, 400))
       }
 
-      const salt = await bcrypt.genSalt(10)
-      const apiKey = await bcrypt.hash(value.email, salt)
+      // const salt = await bcrypt.genSalt(10)
+      // const apiKey = await bcrypt.hash(value.email, salt)
 
-      const token = jwt.sign({ apiKey: apiKey }, String(ACCESS_TOKEN), {
-        expiresIn: ACCESS_TOKEN_EXPIRY,
-      })
+      // const token = jwt.sign({ apiKey: apiKey }, String(ACCESS_TOKEN), {
+      //   expiresIn: ACCESS_TOKEN_EXPIRY,
+      // })
+      const { token, apiKey } = await generateToken(value.email)
 
       if (!token) {
         return next(new AppError("Error creating token, please try again", 400))

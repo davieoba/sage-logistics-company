@@ -11,7 +11,7 @@ const checkLogisticsScheduler = async () => {
     .where(eq(logistics.status, "delivered"))
 
   for (const pkg of packages) {
-    await checkLogisticsStatus(pkg.trackingId)
+    await checkLogisticsStatus(pkg.trackingId as string)
   }
 }
 

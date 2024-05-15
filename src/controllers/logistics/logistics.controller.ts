@@ -11,7 +11,7 @@ import { Logistics, NewLogistics, logistics } from "../../db/schema"
 import generateTrackingNumber, {
   generateTrackingNumberHash,
 } from "../../extensions/libs/generate-tracking-number"
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import checkLogisticsStatus from "../../extensions/handlers/check-logistics-status"
 
 class LogisticsController {
@@ -48,6 +48,32 @@ class LogisticsController {
           pickUpDate: newLogistics[0].pickUpDate,
           status: newLogistics[0].status,
         },
+      })
+    }
+  )
+
+  static getAllLogistics = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { page = 1, limit = 10 } = req.query
+      const pageNumber = parseInt(page as string, 10)
+      const limitNumber = parseInt(page as string, 10)
+      const allLogistics: Logistics[] = await db
+        .select()
+        .from(logistics)
+        .limit(limitNumber)
+        .offset((pageNumber - 1) * limitNumber)
+
+      const countRecords = await db
+        .select({ count: sql<number>`COUNT(*)` })
+        .from(logistics)
+
+      const totalPages = Math.ceil(countRecords[0].count / limitNumber)
+
+      res.status(200).json({
+        message: "ok",
+        totalCount: countRecords,
+        totalPages,
+        data: allLogistics,
       })
     }
   )

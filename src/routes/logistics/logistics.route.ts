@@ -5,6 +5,12 @@ import { restrictTo } from "../../middleware"
 
 const router = Router()
 
+router.get(
+  "/",
+  AuthController.authenticate,
+  restrictTo("admin"),
+  LogisticsController.getAllLogistics
+)
 router.post("/", AuthController.authenticate, LogisticsController.createPackage)
 router.get(
   "/track",
