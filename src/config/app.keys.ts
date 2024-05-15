@@ -8,4 +8,5 @@ export const {
   ACCESS_TOKEN_EXPIRY,
   REFRESH_TOKEN_EXPIRY,
   SECRET_HASH,
+  BASE_URL,
 } = process.env

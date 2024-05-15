@@ -10,4 +10,8 @@ const generateTrackingNumber = (): { token: string; hash: string } => {
 
 export default generateTrackingNumber
 
-const generateTrackingNumberHash = () => {}
+export const generateTrackingNumberHash = (token: string): string => {
+  const hash = crypto.createHash("sha256").update(token).digest("hex")
+
+  return hash
+}

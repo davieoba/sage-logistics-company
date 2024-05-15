@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express"
 import AuthController from "../../controllers/auth/auth.controller"
+import { authLimiter } from "../../middleware"
 
 const router = Router()
 
-router.post("/register", AuthController.register)
+router.post("/register", authLimiter, AuthController.register)
 router.get(
   "/test",
   AuthController.authenticate,

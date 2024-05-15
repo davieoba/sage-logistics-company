@@ -10,21 +10,25 @@ import morgan from "morgan"
 import xss from "xss"
 import authRoute from "./routes/auth/auth.route"
 import logisticsRoute from "./routes/logistics/logistics.route"
-import { unknownEndpoint } from "./extensions/utils"
+import { ignoreFavicon, unknownEndpoint } from "./extensions/utils"
 import { errorController } from "./extensions/handlers/error.controller"
+import checkLogisticsScheduler from "./extensions/helpers/scheduler"
 
 const app = express()
 app.use(helmet())
 app.use(hpp())
 // app.use(xss({}))
+app.use(ignoreFavicon)
 app.use(express.json({ limit: "10kb" }))
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors({ credentials: true }))
 
+// morgan debugger
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
 }
+
 const API_PREFIX = "/api/v1"
 app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
   res.status(200).send("Server is live")
@@ -32,6 +36,9 @@ app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
 
 app.use(API_PREFIX + "/auth", authRoute)
 app.use(API_PREFIX + "/logistics", logisticsRoute)
+
+// scheduler
+checkLogisticsScheduler()
 
 app.use("*", unknownEndpoint)
 app.use(errorController)

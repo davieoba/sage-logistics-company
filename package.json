@@ -4,13 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/index.ts --ext ts",
-    "start": "node dist/index.js",
+    "dev": "CROSS_ENV=development nodemon src/index.ts --ext ts",
+    "start": "CROSS_ENV=production dist/index.js",
     "build": "npx tsc",
     "introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
     "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
     "migrate": "tsx -r dotenv/config src/db/migrate.ts",
     "generate:migration": "drizzle-kit generate:pg --config=drizzle.config.ts && tsx -r dotenv/config src/db/migrate.ts",
+    "db:seed": "ts-node ./src/db/seed.ts",
     "test:watch": "cross-env NODE_ENV=test node --test --watch --require ts-node/register tests/setup.test.ts",
     "test": "cross-env NODE_ENV=test node --test --require ts-node/register tests/setup.test.ts"
   },
@@ -30,7 +31,9 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/dotenv": "^8.2.0",
+    "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -38,6 +41,7 @@
     "drizzle-orm": "^0.30.10",
     "drizzle-zod": "^0.5.1",
     "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "joi": "^17.13.1",
