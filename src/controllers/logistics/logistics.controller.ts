@@ -71,7 +71,7 @@ class LogisticsController {
 
       res.status(200).json({
         message: "ok",
-        totalCount: countRecords,
+        totalCount: countRecords[0].count,
         totalPages,
         data: allLogistics,
       })
